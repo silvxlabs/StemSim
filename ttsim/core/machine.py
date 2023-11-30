@@ -13,7 +13,7 @@ class Machine:
     def pose(self):
         return (self.gnss.x, self.gnss.y, self.camera.theta)
 
-    def move(self, rotation: float, distance: float):
+    def move(self, distance: float, rotation: float):
         # Update the machine pose
         x, y, theta = self.pose
         theta += rotation
@@ -21,13 +21,13 @@ class Machine:
         y += distance * np.sin(theta)
 
         # Update the camera pose
-        self.camera.theta = theta
+        self.camera.theta = theta % (2 * np.pi)
 
         # Update the GNSS position
         self.gnss.x = x
         self.gnss.y = y
 
-    def get_trees(self, stem_map: StemMap):
+    def get_stems(self, stem_map: StemMap):
         T = create_2d_transformation_matrix(self.gnss.x, self.gnss.y, self.camera.theta)
         stem_map_T = stem_map.affine_transform(np.linalg.inv(T))
         stem_map_local = stem_map_T.query(

@@ -1,0 +1,12 @@
+
+PATCH http://127.0.0.1:8000/move HTTP/1.1
+content-type: application/json
+
+{
+    "distance": 10,
+    "rotation": 1.5
+}
+
+###
+
+GET http://127.0.0.1:8000/stems HTTP/1.1
