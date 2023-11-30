@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
+import numpy as np
 from .stem_map import StemMap
 
 
@@ -17,8 +18,8 @@ def show_stem_map(stem_map: StemMap):
     ax.add_collection(collection)
 
     # Set the plot limits to the stem map extents
-    ax.set_xlim(0, stem_map.width)
-    ax.set_ylim(0, stem_map.height)
+    ax.set_xlim(np.min(stem_map.x), np.max(stem_map.x))
+    ax.set_ylim(np.min(stem_map.y), np.max(stem_map.y))
 
     # Set aspect ratio to 1
     ax.set_aspect(1)
