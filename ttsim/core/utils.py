@@ -1,5 +1,4 @@
 import numpy as np
-from .stem_map import StemMap
 
 
 def create_2d_transformation_matrix(x, y, theta):
@@ -18,13 +17,14 @@ def create_2d_transformation_matrix(x, y, theta):
     return T
 
 
-class Camera:
-    def __init__(self, theta, max_dist: float, fov: float):
-        self.theta = theta
-        self.max_dist = max_dist
-        self.fov = fov
+def generate_quadrafolium(a):
+    theta = np.linspace(0, 2 * np.pi, 100)
+    r = a * np.cos(2 * theta)
 
-    def capture(self, stem_map: StemMap) -> StemMap:
-        stem_map_local = stem_map.query(self.max_dist, -self.fov / 2, self.fov / 2)
+    x = r * np.cos(theta)
+    y = r * np.sin(theta)
 
-        return stem_map_local
+    x += 50
+    y += 50
+
+    return np.array(x, y)

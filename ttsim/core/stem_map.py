@@ -2,13 +2,11 @@ import numpy as np
 
 
 class StemMap:
-    def __init__(self, width, height, stems):
-        self.width = width
-        self.height = height
+    def __init__(self, stems):
         self._stems = stems
 
     def copy(self):
-        return StemMap(self.width, self.height, self._stems.copy())
+        return StemMap(self._stems.copy())
 
     @property
     def uid(self):
@@ -41,9 +39,7 @@ class StemMap:
     def affine_transform(self, T: np.ndarray):
         x, y = T.dot(np.array([self.x, self.y, np.ones(len(self.x))]))[:2]
 
-        return StemMap(
-            self.width, self.height, np.array([self.uid, x, y, self.dbh, self.cut]).T
-        )
+        return StemMap(np.array([self.uid, x, y, self.dbh, self.cut]).T)
 
     def query(self, radius, min_theta=np.pi, max_theta=np.pi / 4):
         rho = np.sqrt(self.x**2 + self.y**2)
@@ -54,13 +50,11 @@ class StemMap:
             mask = (rho < radius) & (min_theta < theta) & (theta < max_theta)
 
         return StemMap(
-            self.width,
-            self.height,
             self._stems[mask],
         )
 
     def __repr__(self):
-        return f"<StemMap {self.width}x{self.height} {len(self._stems)} stems>"
+        return f"<StemMap {len(self._stems)} stems>"
 
 
 def generate_stem_map(
@@ -74,4 +68,4 @@ def generate_stem_map(
     dbh = np.random.normal(dbh_mu, dbh_sigma, n_stems)
     cut = np.zeros(n_stems, dtype=bool)
 
-    return StemMap(width, height, np.array(list(zip(uid, x, y, dbh, cut))))
+    return StemMap(np.array(list(zip(uid, x, y, dbh, cut))))
