@@ -7,6 +7,9 @@ class StemMap:
         self.height = height
         self._stems = stems
 
+    def copy(self):
+        return StemMap(self.width, self.height, self._stems.copy())
+
     @property
     def uid(self):
         return self._stems[:, 0]
@@ -15,9 +18,17 @@ class StemMap:
     def x(self):
         return self._stems[:, 1]
 
+    @x.setter
+    def x(self, array: np.ndarray):
+        self._stems[:, 1] = array
+
     @property
     def y(self):
         return self._stems[:, 2]
+
+    @y.setter
+    def y(self, array: np.ndarray):
+        self._stems[:, 2] = array
 
     @property
     def dbh(self):
@@ -27,8 +38,29 @@ class StemMap:
     def cut(self):
         return self._stems[:, 4]
 
+    def affine_transform(self, T: np.ndarray):
+        x, y = T.dot(np.array([self.x, self.y, np.ones(len(self.x))]))[:2]
+
+        return StemMap(
+            self.width, self.height, np.array([self.uid, x, y, self.dbh, self.cut]).T
+        )
+
+    def query(self, radius, min_theta=np.pi, max_theta=np.pi / 4):
+        rho = np.sqrt(self.x**2 + self.y**2)
+        theta = np.arctan2(self.y, self.x)
+        if min_theta > max_theta:
+            mask = (rho < radius) & ((min_theta < theta) | (theta < max_theta))
+        else:
+            mask = (rho < radius) & (min_theta < theta) & (theta < max_theta)
+
+        return StemMap(
+            self.width,
+            self.height,
+            self._stems[mask],
+        )
+
     def __repr__(self):
-        return f"<StemMap {self._width}x{self._height} {len(self._stems)} stems>"
+        return f"<StemMap {self.width}x{self.height} {len(self._stems)} stems>"
 
 
 def generate_stem_map(
