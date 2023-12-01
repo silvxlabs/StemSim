@@ -4,7 +4,7 @@ content-type: application/json
 
 {
     "distance": 10,
-    "rotation": 1.5
+    "rotation": 3.14
 }
 
 ###
