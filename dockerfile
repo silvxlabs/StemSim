@@ -1,9 +1,13 @@
 FROM python:3.12
 
+# Copy dependencies and install
+COPY /pyproject.toml .
 RUN pip install poetry
-
-COPY . .
-
+RUN poetry config virtualenvs.create false
 RUN poetry install
 
-CMD exec uvicorn ttsim.main:app --host 127.0.0.1 --port 8000
+# Copy the source code
+COPY . .
+
+# Run the server
+CMD ["uvicorn", "stemsim.main:app", "--host", "0.0.0.0", "--port", "80"]
