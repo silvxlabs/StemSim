@@ -196,6 +196,28 @@ class StemMap:
             self._stems[mask],
         )
 
+    def to_json(self) -> dict:
+        """
+        Return a JSON representation of the stem map.
+
+        Returns
+        -------
+        dict
+            A JSON representation of the stem map.
+        """
+        return {
+            "stems": [
+                {
+                    "uid": int(stem[0]),
+                    "x": float(stem[1]),
+                    "y": float(stem[2]),
+                    "dbh": float(stem[3]),
+                    "cut": bool(stem[4]),
+                }
+                for stem in self._stems
+            ]
+        }
+
     def __repr__(self):
         return f"<StemMap {len(self._stems)} stems>"
 

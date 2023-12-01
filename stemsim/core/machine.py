@@ -10,6 +10,8 @@ class Machine:
 
     Parameters
     ----------
+    stem_map: StemMap
+        The stem map to place the machine in.
     camera : Camera
         The camera device.
     gnss : GNSS
@@ -17,6 +19,8 @@ class Machine:
 
     Attributes
     ----------
+    stem_map: StemMap
+        The stem map.
     camera : Camera
         The camera device.
     gnss : GNSS
@@ -32,8 +36,9 @@ class Machine:
         Get the stems from the camera.
     """
 
-    def __init__(self, camera: Camera, gnss: GNSS):
+    def __init__(self, stem_map: StemMap, camera: Camera, gnss: GNSS):
         """Constructor"""
+        self.stem_map = stem_map
         self.camera = camera
         self.gnss = gnss
 
@@ -48,6 +53,20 @@ class Machine:
             The current pose of the machine.
         """
         return (self.gnss.x, self.gnss.y, self.camera.theta)
+
+    @pose.setter
+    def pose(self, pose: tuple[float, float, float]) -> None:
+        """
+        Set the current pose of the machine.
+
+        Parameters
+        ----------
+        pose : tuple[float, float, float]
+            The current pose of the machine.
+        """
+        self.gnss.x = pose[0]
+        self.gnss.y = pose[1]
+        self.camera.theta = pose[2]
 
     def move(self, distance: float, rotation: float) -> None:
         """
@@ -68,14 +87,9 @@ class Machine:
         self.gnss.x += distance * np.cos(self.camera.theta)
         self.gnss.y += distance * np.sin(self.camera.theta)
 
-    def get_stems(self, stem_map: StemMap) -> StemMap:
+    def get_local_stems(self) -> StemMap:
         """
         Get the stems from the camera.
-
-        Parameters
-        ----------
-        stem_map : StemMap
-            Stem map to query.
 
         Returns
         -------
@@ -87,7 +101,7 @@ class Machine:
         T = create_2d_transformation_matrix(self.gnss.x, self.gnss.y, self.camera.theta)
 
         # Transform the stem map into the camera's frame of reference
-        stem_map_T = stem_map.affine_transform(np.linalg.inv(T))
+        stem_map_T = self.stem_map.affine_transform(np.linalg.inv(T))
 
         # Query the transformed stem map using the camera's parameters
         stem_map_local = stem_map_T.query(
