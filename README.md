@@ -14,4 +14,4 @@ Then run the container with
 docker run --rm -p 80:80 stemsim
 ```
 
-The API endpoint should be available at `http://localhost:80`.
+The API endpoints should be available at `http://localhost:80`.
