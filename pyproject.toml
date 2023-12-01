@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ttsim"
+name = "stemsim"
 version = "0.1.0"
 description = ""
 authors = ["Lucas Wells <lucas@silvxlabs.com>"]
