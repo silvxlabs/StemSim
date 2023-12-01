@@ -51,7 +51,7 @@ router = APIRouter()
 @router.get("/{machine_id}")
 async def get_machine(machine_id: str):
     machine = MACHINES[machine_id]
-    return Machine(
+    return GetMachine(
         machine_id=machine_id,
         camera_max_dist=machine.camera.max_dist,
         camera_fov=machine.camera.fov,
